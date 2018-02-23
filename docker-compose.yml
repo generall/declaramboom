@@ -1,32 +1,14 @@
 version: '2'
 services:
-  elastic4corruption:
-    image: elasticsearch
-    container_name: elastic4corruption
-    environment:
-      - http.host=0.0.0.0
-      - cluster.name=docker-cluster
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 262144
-        hard: 262144
-    cap_add:
-      - IPC_LOCK
-    volumes:
-      - ./data/elastic:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-      - 9300:9300
-    network_mode: "host"
-  kibana4corruption:
-    image: kibana
-    environment:
-      - ELASTICSEARCH_URL=http://localhost:9200
-    ports:
-      - 5601:5601
-    network_mode: "host"
+    mongodb:
+        image: mongo:latest
+        container_name: "mongodb"
+        environment:
+          - MONGO_DATA_DIR=/data/db
+          - MONGO_LOG_DIR=/dev/null
+        volumes:
+          - ./data/db:/data/db
+        ports:
+            - 27017:27017
+        command: mongod --smallfiles --logpath=/dev/null # --quiet
+        network_mode: 'host'
